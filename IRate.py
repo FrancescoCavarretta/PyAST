@@ -1,6 +1,6 @@
 import numpy
 import preprocessing
-import spiketrainstats
+import SpikeStats
 
 """ embed a spike train recorded experimentally """
 class IRate:
@@ -33,7 +33,7 @@ class IRate:
 
   """ return various statistics of spike trains """
   def getSpikeTrainStats(self):
-    return spiketrainstats.getStats(self.SpikeTime)
+    return SpikeStats.getStats(self.SpikeTime)
   
 
   """ used during spike generation to scale the time """
