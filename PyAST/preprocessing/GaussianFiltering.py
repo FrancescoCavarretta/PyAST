@@ -1,5 +1,5 @@
 import numpy
-from preprocessing import spikebits
+from . import spikebits
 
 """ build a gaussian filter """
 def mk_gaussian_filter(t, mean=0.0, std=0.0):
@@ -7,7 +7,7 @@ def mk_gaussian_filter(t, mean=0.0, std=0.0):
 
 
 """ convolution with gaussian filter """
-def fixed_gaussian_filtering(spiketimes, dt, width=3.0):
+def FixedGaussianFiltering(spiketimes, dt, width=3.0):
   _spiketimes = spikebits.spikebits(spiketimes, dt)
 
   # create a gaussian filter
@@ -26,7 +26,7 @@ def fixed_gaussian_filtering(spiketimes, dt, width=3.0):
 
 
 
-def adaptive_gaussian_filtering(spiketimes, fixed_gaussian_template, dt, width=4.0):
+def AdaptiveGaussianFiltering(spiketimes, fixed_gaussian_template, dt, width=4.0):
   z   = numpy.zeros(len(fixed_gaussian_template[0]))
   
   
@@ -35,7 +35,7 @@ def adaptive_gaussian_filtering(spiketimes, fixed_gaussian_template, dt, width=4
 
     
     ## create Gaussian filter
-    gwidth = 1/(numpy.sqrt(2*numpy.pi)*fixed_gaussian_template[1][i])*width
+    gwidth = 1/(numpy.sqrt(2*numpy.pi)*(fixed_gaussian_template[1][i]/width))
     gfilter = mk_gaussian_filter(numpy.arange(-1.0, 1.0+dt, dt), std=gwidth) 
 
     # Check edge effects, and add in the current gauss/spike
@@ -58,5 +58,5 @@ def adaptive_gaussian_filtering(spiketimes, fixed_gaussian_template, dt, width=4
 
     # convolve
     z[_min_i_z:_max_i_z] += gfilter[_min_i_f:_max_i_f]
-    
+
   return numpy.arange(0, len(z), 1.0)*dt, z

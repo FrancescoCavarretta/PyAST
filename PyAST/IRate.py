@@ -1,41 +1,58 @@
 import numpy
-import preprocessing
-import SpikeStats
+from .preprocessing import RefractoryPeriod as RefPeriodProcessing, GaussianFiltering
+from . import SpikeStats
 
 """ embed a spike train recorded experimentally """
 class IRate:
-  def __init__(self, SpikeTime, RefractoryPeriod, TimeUnitIn, TimeUnitOut='ms'):   
+  def __init__(self, SpikeTime, RefractoryPeriod, TimeUnitIn='s'):   
     if type(SpikeTime) != numpy.ndarray:
       SpikeTime = numpy.array(SpikeTime)
 
-    self._TimeScaleFactors = { 's':1.0, 'ms':0.001 }
-    self._FrequencyScaleFactors = { 'GHz':1.0e+6, 'MHz':1.0e+3, 'Hz':1.0 }
-    
-    TimeScaleFactorIn  = self._TimeScaleFactors[TimeUnitIn]
-    TimeScaleFactorOut = self._TimeScaleFactors[TimeUnitOut]
-    TimeScaleFactor = TimeScaleFactorIn/TimeScaleFactorOut
-    
-    self.SpikeTime = SpikeTime * TimeScaleFactor
-    self.RefractoryPeriod = RefractoryPeriod * TimeScaleFactor
 
-    # remove spikes occurring within an ISI smaller than RefPeriod   
-    self.SpikeTime = preprocessing.refractory_period.adjust_isi(self.SpikeTime, self.RefractoryPeriod)
+    TimeScaleFactor =  { 's':1.0, 'ms':0.001, 'tenth_of_ms':0.0001 }[TimeUnitIn] 
+
+    # convert to seconds
+    self.RefractoryPeriod = RefractoryPeriod
+    self.OriginalSpikeTime = SpikeTime * TimeScaleFactor
+
+    # remove spikes occurring within an ISI smaller than RefPeriod 
+    self.SpikeTime = RefPeriodProcessing.AdjustISIs(self.OriginalSpikeTime, self.RefractoryPeriod)
     
-    self.XUnit = TimeUnitOut
-    self.YUnit = 'Hz'
-
-
-  """ extract the firing template """
-  def getIRateTemplate(self, dt=.001):
-    g_template = preprocessing.gaussian_filtering.fixed_gaussian_filtering(self.SpikeTime, dt)
-    a_template = preprocessing.gaussian_filtering.adaptive_gaussian_filtering(self.SpikeTime, g_template, dt)
-    return a_template
 
   """ return various statistics ofs spike trains """
   def getSpikeTrainStats(self):
-    return SpikeStats.getStats(self.SpikeTime)
+    return { 'Diff':(len(self.OriginalSpikeTime)-len(self.SpikeTime)), 'Raw':SpikeStats.get(self.OriginalSpikeTime), 'Processed':SpikeStats.get(self.SpikeTime) }
+
+
+  """ extract the firing template """
+  def getIRateTemplate(self, TimeBinSz=.001):
+    return IRateTemplate(self, TimeBinSz)
+
+
   
 
-  """ used during spike generation to scale the time """
-  def _getTimeScaleFactorXY(self):
-    return 1.0/self._TimeScaleFactors[self.XUnit] 
+
+
+
+""" Spike Rate Template """
+class IRateTemplate(IRate):
+  def __init__(self, IRateData, TimeBinSz):
+    self.IRateData = IRateData
+    self.TimeBinSz = TimeBinSz
+    
+    _IRateDistribution = GaussianFiltering.AdaptiveGaussianFiltering(
+      self.IRateData.SpikeTime,
+      GaussianFiltering.FixedGaussianFiltering(self.IRateData.SpikeTime, self.TimeBinSz),
+      self.TimeBinSz)
+
+    # reshape
+    _IRateDistribution = numpy.concatenate(([_IRateDistribution[0]], [_IRateDistribution[1]]), axis=0)
+    self.IRateDistribution = _IRateDistribution.T
+      
+
+  def __getitem__(self, index):
+    return self.IRateDistribution[index, :]
+
+
+  def __len__(self):
+    return len(self.IRateDistribution[:, 0])

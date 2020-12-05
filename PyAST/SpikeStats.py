@@ -1,27 +1,22 @@
 import numpy as np
 
+def get(SpikeTime):
 
-## LV
-def LV(ISIs):
-  num   = np.power(ISIs[1:]-ISIs[:-1], 2.0)
-  denom = np.power(ISIs[1:]+ISIs[:-1], 2.0)
-  
-  num = np.delete(num, denom <= 0)
-  denom = np.delete(denom, denom <= 0)
-  lv = 3*np.mean(num/denom)
-  return lv
+  ## LV
+  def LV(ISIs):
+    return 3*np.mean(np.power(ISIs[1:]-ISIs[:-1], 2.0)/np.power(ISIs[1:]+ISIs[:-1], 2.0))
 
 
 
 
-def getStats(SpikeTime):
+
   stats = {}
   ISIs = SpikeTime[1:] - SpikeTime[:-1]
   MeanRate = 1.0/np.mean(ISIs)
   MeanCV   = np.std(ISIs)/np.mean(ISIs)
   MeanLV   = LV(ISIs)
   Reg      = (3-MeanLV)/(2*MeanLV)
-  stats['Mean'] = MeanRate
+  stats['Mean Rate (Hz)'] = MeanRate
   stats['ISI_CV'] = MeanCV
   stats['LV'] = MeanLV
   stats['Regularity'] = Reg
