@@ -18,7 +18,7 @@ def GenerateSpikeTrain(objIRate, UnGamma=None, Precision=3):
   # The CurrentISI will be expressed in seconds
   templateIRate = objIRate.getIRateTemplate()
   Reg = objIRate.getSpikeTrainStats()['Processed']['Regularity']
-  print (Reg)
+  
   # Pull spike times from Gamma distribution to generate AST
   # Params for Gamma: rate from rate template (and k from Lv distribution = reg)
   ISIs = []

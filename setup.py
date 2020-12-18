@@ -1,11 +1,11 @@
-from setuptools import setup
+from setuptools import setup, find_packages
 
 setup(
  name='PyAST',
  version='0.1.0',
  author='Francesco Cavarretta',
  author_email='francescocavarretta@hotmail.it',
- packages=['PyAST'],
+ packages=find_packages(),
  scripts=[],
  url='',
  license='',
