@@ -21,3 +21,7 @@ def get(SpikeTime):
   stats['LV'] = MeanLV
   stats['Regularity'] = Reg
   return stats
+
+
+###
+# Tk = T(k-l) + F^(-1) ( 2^N(l,k) )

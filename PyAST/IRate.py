@@ -28,6 +28,14 @@ class IRate:
   def getIRateTemplate(self, TimeBinSz=.001):
     return IRateTemplate(self, TimeBinSz)
 
+  """ length """
+  def __len__(self):
+    return len(self.SpikeTime)
+
+  """ item """
+  def __getitem__(self, i):
+    return self.SpikeTime[i]
+
 
   
 
@@ -36,15 +44,19 @@ class IRate:
 
 """ Spike Rate Template """
 class IRateTemplate(IRate):
-  def __init__(self, IRateData, TimeBinSz):
-    self.IRateData = IRateData
+  def __init__(self, IRateData, TimeBinSz=0.001):
     self.TimeBinSz = TimeBinSz
-    
-    _IRateDistribution = GaussianFiltering.AdaptiveGaussianFiltering(
-      self.IRateData.SpikeTime,
-      GaussianFiltering.FixedGaussianFiltering(self.IRateData.SpikeTime, self.TimeBinSz),
-      self.TimeBinSz)
 
+    if isinstance(IRateData, IRate):
+      self.IRateData = IRateData
+      
+      _IRateDistribution = GaussianFiltering.AdaptiveGaussianFiltering(
+        self.IRateData.SpikeTime,
+        GaussianFiltering.FixedGaussianFiltering(self.IRateData.SpikeTime, self.TimeBinSz),
+        self.TimeBinSz)
+    else:
+      _IRateDistribution = IRateData
+    
     # reshape
     _IRateDistribution = numpy.concatenate(([_IRateDistribution[0]], [_IRateDistribution[1]]), axis=0)
     self.IRateDistribution = _IRateDistribution.T

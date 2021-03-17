@@ -1,10 +1,10 @@
-example.py
-example_wichmann.py
 setup.py
 PyAST/IRate.py
 PyAST/SpikeGeneration.py
+PyAST/SpikeGenerationBurst.py
 PyAST/SpikeStats.py
 PyAST/__init__.py
+PyAST/test.py
 PyAST.egg-info/PKG-INFO
 PyAST.egg-info/SOURCES.txt
 PyAST.egg-info/dependency_links.txt
