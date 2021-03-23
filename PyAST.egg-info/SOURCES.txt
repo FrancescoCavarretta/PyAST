@@ -14,3 +14,6 @@ PyAST/preprocessing/GaussianFiltering.py
 PyAST/preprocessing/RefractoryPeriod.py
 PyAST/preprocessing/__init__.py
 PyAST/preprocessing/spikebits.py
+preprocessing/__init__.py
+preprocessing/gaussian_filtering.py
+preprocessing/refractory_period.py

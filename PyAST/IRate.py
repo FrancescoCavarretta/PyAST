@@ -36,6 +36,10 @@ class IRate:
   def __getitem__(self, i):
     return self.SpikeTime[i]
 
+  """ get x y """
+  def get(self, TimeBinSz=.001):
+    _IRateDistribution = self.getIRateTemplate(TimeBinSz=TimeBinSz).IRateDistribution
+    return _IRateDistribution[:,0], _IRateDistribution[:,1]
 
   
 

@@ -4,7 +4,7 @@ from . import IRate
 """
   Generate a spike train
 """
-def GenerateSpikeTrain(templateIRate, UnGamma=None, Precision=3, MaxFRate=None, MinFRate=None, seed=1234, RefractoryPeriod=0.003, Regularity=None):
+def GenerateSpikeTrain(templateIRate, UnGamma=None, Precision=3, MaxFRate=None, MinFRate=None, seed=None, RefractoryPeriod=0.003, Regularity=None):
 ##  print (templateIRate.IRateDistribution)
 ##  import matplotlib.pyplot as plt
 ##  plt.plot(templateIRate.IRateDistribution[:, 0], templateIRate.IRateDistribution[:, 1])
@@ -48,6 +48,8 @@ def GenerateSpikeTrain(templateIRate, UnGamma=None, Precision=3, MaxFRate=None, 
   I = 0
 
   # instantiate random number generator
+  if seed is None:
+    seed = 0
   rng = np.random.Generator(np.random.Philox(seed))
 
 
