@@ -1,5 +1,5 @@
 import numpy as np
-from . import IRate
+from .IRate import IRate
 
 
 """ spike train generator """
@@ -28,7 +28,7 @@ class  SpikeTrainGenerator:
     
     for i in range(n):
       spike_train.append(self._GenerateSpikeTrain(self._seed,
-                               self.time/1000.0,
+                               self.time,
                                self.frequency,
                                self.RefractoryPeriod,
                                self.Regularity,
@@ -132,7 +132,7 @@ class SpikeTrainGeneratorIRate(SpikeTrainGenerator):
     
     
   def _GenerateSpikeTrain(self, seed, time, frequency, RefractoryPeriod, Regularity, UnGamma=None, Precision=10, MaxFRate=None, MinFRate=None):
-    return IRate.IRate(super()._GenerateSpikeTrain(seed, 
+    return IRate(super()._GenerateSpikeTrain(seed, 
                        time, frequency, RefractoryPeriod, 
                        Regularity, 
                        UnGamma=UnGamma, Precision=Precision, MaxFRate=MaxFRate, MinFRate=MinFRate), RefractoryPeriod, 's')
