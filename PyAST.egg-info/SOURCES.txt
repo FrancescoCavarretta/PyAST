@@ -4,16 +4,13 @@ PyAST/SpikeGeneration.py
 PyAST/SpikeGenerationBurst.py
 PyAST/SpikeStats.py
 PyAST/__init__.py
-PyAST/test.py
 PyAST.egg-info/PKG-INFO
 PyAST.egg-info/SOURCES.txt
 PyAST.egg-info/dependency_links.txt
 PyAST.egg-info/requires.txt
 PyAST.egg-info/top_level.txt
+PyAST/neuron/__init__.py
 PyAST/preprocessing/GaussianFiltering.py
 PyAST/preprocessing/RefractoryPeriod.py
 PyAST/preprocessing/__init__.py
 PyAST/preprocessing/spikebits.py
-preprocessing/__init__.py
-preprocessing/gaussian_filtering.py
-preprocessing/refractory_period.py
